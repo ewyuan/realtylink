@@ -16,8 +16,8 @@ https://github.com/maxmalysh/python-proxy-checker/blob/master/proxy.py
 def run():
     # Global variables
     # in_filename  = './proxy/out/unchecked-proxies.txt'
-    in_directory = 'realtylink/proxy/out/'
-    out_filename = 'realtylink/proxy/out/checked-proxies.txt'
+    in_directory = 'proxy/out/'
+    out_filename = 'proxy/out/checked-proxies.txt'
     test_url = 'http://www.realtylink.org'
     thread_number = 100
     timeout_value = 10

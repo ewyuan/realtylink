@@ -25,7 +25,7 @@ def run():
     proxies = asyncio.Queue()
     broker = Broker(proxies)
     tasks = asyncio.gather(broker.find(types=[('HTTP', 'High'), ('HTTPS', 'High')], limit=50),
-                           save(proxies, filename='realtylink/proxy/out/unchecked-proxies.txt'))
+                           save(proxies, filename='proxy/out/unchecked-proxies.txt'))
     loop = asyncio.get_event_loop()
     loop.run_until_complete(tasks)
 
