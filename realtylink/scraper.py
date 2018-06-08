@@ -3,9 +3,18 @@ import time
 import pandas as pd
 import requests
 from lxml import etree
-from realtylink.realtylink import config
-from essentials.essentials import remove_trailing
+from realtylink import config
 
+def remove_trailing(string):
+    """
+    Return a new string with trailing spaces on the left and right side of the string.
+
+    :param string: string to remove sequences from
+    :return: str
+    """
+    string = string.lstrip()
+    string = string.rstrip()
+    return string
 
 def generate_links(file):
     """ Return a list of generated links based on the information from the csv file and config.py.

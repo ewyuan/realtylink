@@ -8,9 +8,9 @@ from email.mime.base import MIMEBase
 from email.mime.multipart import MIMEMultipart
 from email.mime.text import MIMEText
 from email.utils import COMMASPACE, formatdate
-from realtylink.realtylink.scraper import Scraper
-from realtylink.realtylink import config
-from realtylink.realtylink.proxy import checker, grabber
+from realtylink.scraper import Scraper
+from realtylink import config
+from realtylink.proxy import checker, grabber
 
 
 def get_proxies():
