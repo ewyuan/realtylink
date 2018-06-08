@@ -85,7 +85,10 @@ class Scraper:
             for option in options:
                 string = remove_trailing(option.text)
                 values = string.split(" - ")
-                num_houses = int(values[1]) - int(values[0]) + 1
+                if len(values) == 2:
+                    num_houses = int(values[1]) - int(values[0]) + 1
+                elif len(values) == 1:
+                    num_houses = 1
                 page = link + "&rowp=" + values[0]
                 if page not in pages:
                     pages[page] = num_houses
