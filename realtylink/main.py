@@ -16,7 +16,7 @@ from realtylink.proxy import checker, grabber
 def get_proxies():
     grabber.run()
     checker.run()
-    with open("realtylink/proxy/out/checked-proxies.txt") as f:
+    with open("proxy/out/checked-proxies.txt") as f:
         content = f.readlines()
         f.close()
     return [x.strip() for x in content]
@@ -47,7 +47,7 @@ def send_mail(send_from, send_to, subject, text, file, email_server):
     part = MIMEBase('application', 'octet-stream')
     part.set_payload(attachment.read())
     encoders.encode_base64(part)
-    part.add_header('Content-Disposition', "attachment; filename= %s" % file[4:])  # if path changes: change file[4:]
+    part.add_header('Content-Disposition', "attachment; filename= %s" % file[6:])  # if path changes: change file[4:]
 
     msg.attach(part)
 
@@ -90,14 +90,12 @@ def build_subject(changes):
 
 
 def main():
+    # noinspection PyBroadException
     try:
         proxy = {'http': get_proxies().pop(0)}
-
-        today_file = "out/" + str(datetime.date.today()) + ".csv"
-        yesterday_file = "out/" + str(datetime.date.today() - datetime.timedelta(1)) + ".csv"
-
+        today_file = "files/" + str(datetime.date.today()) + ".csv"
+        yesterday_file = "files/" + str(datetime.date.today() - datetime.timedelta(1)) + ".csv"
         exist = os.path.isfile(today_file)
-
         scraper = Scraper(yesterday_file, "cities.csv")
         scraper.set_proxy(proxy)
         pages = scraper.get_pages()
@@ -112,8 +110,9 @@ def main():
         main()
 
 if __name__ == "__main__":
-    while 1:
-        main()
-        print("Done, sleeping now.")
-        time.sleep(60)
-        schedule.every().day.at("11:00").do(main)
+    main()
+    # while 1:
+    #     main()
+    #     print("Done, sleeping now.")
+    #     time.sleep(60)
+    #     schedule.every().day.at("11:00").do(main)
