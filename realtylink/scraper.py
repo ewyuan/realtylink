@@ -63,8 +63,9 @@ class Scraper:
         try:
             for i in pd.read_csv(yesterday_file).to_dict(orient="split")["data"]:
                 key = i.pop(0)
-                i.pop(0)
-                self.houses[key] = [""] + i
+                if i[0] != "Removed":
+                    i.pop(0)
+                    self.houses[key] = [""] + i
         except FileNotFoundError:
             print("File does not exist.")
         self.header = {'User-Agent': 'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_13_1) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/66.0.3359.181 Safari/537.36'}
@@ -107,7 +108,7 @@ class Scraper:
             num_houses = pages[page]
             interval = 0
             for num in range(num_houses):
-                address = tree.xpath("/html/body/div/table/tr[6]/td/table//tr["
+                address = tree.xpath("/html/body/div/table/tr[6]/td/table/tr["
                                      + str(5 + interval)
                                      + "]/td[1]/font")
                 address = remove_trailing(address[0].text)
@@ -140,12 +141,11 @@ class Scraper:
                         lot_size = round(lot_size, 2)
                         lot_size = str(lot_size)
                         houses[mls] = ["", city, neighbourhood, address, price, lot_size, link]
-                    else:
-                        pass
                 except ValueError:
                     lot_size = "Not Available"
                     houses[mls] = ["", city, neighbourhood, address, price, lot_size, link]
                 interval += 6
+
             if len(houses) == 0:
                 raise Exception("Proxy error")
         return houses
@@ -165,9 +165,20 @@ class Scraper:
         :return: list[int]
         """
         changes = [0, 0, 0]
+        current_houses = {}
+        removed_houses = {}
+
+        for mls in self.houses:
+            if mls in houses:
+                current_houses[mls] = self.houses[mls]
+            else:
+                removed_houses[mls] = self.houses[mls]
+                removed_houses[mls][0] = "Removed"
+                changes[2] += 1
+
         for mls in houses:
-            if mls in self.houses:
-                current_price = float(self.houses[mls][4][:-2].replace(",", ""))
+            if mls in current_houses:
+                current_price = float(current_houses[mls][4][:-2].replace(",", ""))
                 listing_price = float(houses[mls][4][:-2].replace(",", ""))
                 if current_price > listing_price:
                     houses[mls][0] = "Price Decrease from " + str(current_price)
@@ -180,11 +191,8 @@ class Scraper:
             else:
                 houses[mls][0] = "New Listing"
                 changes[1] += 1
-        for mls in self.houses:
-            if mls not in houses:
-                houses[mls] = self.houses[mls]
-                houses[mls][0] = "Removed"
-                changes[2] += 1
+
+        houses.update(removed_houses)
         self.__update_csv(today_file, houses)
         return changes
 
@@ -220,7 +228,6 @@ class Scraper:
         # """
         time.sleep(2)  # add a 2 second delay
         session = requests.get(url=link, headers=self.header, proxies=self.proxy)
-        # print(session.text)
         try:
             tree = etree.HTML(session.text)
         except Exception as exc:
