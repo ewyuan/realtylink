@@ -5,6 +5,7 @@ import requests
 from lxml import etree
 from realtylink import config
 
+
 def remove_trailing(string):
     """
     Return a new string with trailing spaces on the left and right side of the string.
@@ -15,6 +16,7 @@ def remove_trailing(string):
     string = string.lstrip()
     string = string.rstrip()
     return string
+
 
 def generate_links(file):
     """ Return a list of generated links based on the information from the csv file and config.py.
@@ -46,6 +48,7 @@ def generate_links(file):
                    "SCTP=" + config.SCTP
             links.append(link)
         return links
+
 
 """ Scrapes necessary information from realtylink.org. """
 
