@@ -10,17 +10,6 @@ from email.mime.text import MIMEText
 from email.utils import COMMASPACE, formatdate
 from realtylink.scraper import Scraper
 from realtylink import config
-from realtylink.proxy import checker, grabber
-
-
-def get_proxies():
-    grabber.run()
-    checker.run()
-    with open("proxy/out/checked-proxies.txt") as f:
-        content = f.readlines()
-        f.close()
-    return [x.strip() for x in content]
-
 
 def send_mail(send_from, send_to, subject, text, file, email_server):
     """
@@ -92,27 +81,23 @@ def build_subject(changes):
 def main():
     # noinspection PyBroadException
     try:
-        proxy = {'http': get_proxies().pop(0)}
         today_file = "files/" + str(datetime.date.today()) + ".csv"
         yesterday_file = "files/" + str(datetime.date.today() - datetime.timedelta(1)) + ".csv"
+
         exist = os.path.isfile(today_file)
         scraper = Scraper(yesterday_file, "cities.csv")
-        scraper.set_proxy(proxy)
         pages = scraper.get_pages()
         houses = scraper.parse_realtylink_pages(pages)
         changes = scraper.update_houses(today_file, houses)
-
         email_server = "smtp-mail.outlook.com"
         if (changes[0] > 0 or changes[1] > 0 or changes[2] > 0) and (not exist):
             subject = build_subject(changes)
             send_mail(config.EMAIL_EMAIL, config.EMAIL_LIST, subject, "", today_file, email_server)
     except:
+        print("Failed. Trying again...")
         main()
 
 if __name__ == "__main__":
-    main()
-    # while 1:
-    #     main()
-    #     print("Done, sleeping now.")
-    #     time.sleep(60)
-    #     schedule.every().day.at("11:00").do(main)
+    while 1:
+        schedule.every().day.at("11:00").do(main)
+        time.sleep(1)
