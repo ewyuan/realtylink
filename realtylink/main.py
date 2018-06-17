@@ -79,6 +79,7 @@ def build_subject(changes):
 
 
 def main():
+    print("Starting...")
     # noinspection PyBroadException
     try:
         today_file = "files/" + str(datetime.date.today()) + ".csv"
@@ -93,11 +94,12 @@ def main():
         if (changes[0] > 0 or changes[1] > 0 or changes[2] > 0) and (not exist):
             subject = build_subject(changes)
             send_mail(config.EMAIL_EMAIL, config.EMAIL_LIST, subject, "", today_file, email_server)
-    except:
+    except Exception:
         print("Failed. Trying again...")
         main()
 
 if __name__ == "__main__":
+    schedule.every().day.at("11:00").do(main)
     while 1:
-        schedule.every().day.at("11:00").do(main)
+        schedule.run_pending()
         time.sleep(1)
