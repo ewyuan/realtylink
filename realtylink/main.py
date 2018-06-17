@@ -11,6 +11,7 @@ from email.utils import COMMASPACE, formatdate
 from realtylink.scraper import Scraper
 from realtylink import config
 
+
 def send_mail(send_from, send_to, subject, text, file, email_server):
     """
     Sends a mail to send_to with file attached.
@@ -97,6 +98,7 @@ def main():
     except Exception:
         print("Failed. Trying again...")
         main()
+
 
 if __name__ == "__main__":
     schedule.every().day.at("11:00").do(main)
