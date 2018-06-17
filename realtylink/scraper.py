@@ -215,7 +215,7 @@ class Scraper:
         # :param link: str
         # :return: ElementTree
         # """
-        time.sleep(10)  # add a 2 second delay
+        time.sleep(10)  # add a 10 second delay
         session = requests.get(url=link,
                                headers=self.header,
                                proxies=dict(http='http://' + config.USERNAME +
