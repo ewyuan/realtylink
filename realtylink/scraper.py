@@ -69,7 +69,6 @@ class Scraper:
         except FileNotFoundError:
             print("File does not exist.")
         self.header = {'User-Agent': 'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_13_1) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/66.0.3359.181 Safari/537.36'}
-        self.proxy = {'http': "http://66.82.144.29:8080"}
 
     def get_pages(self):
         """
@@ -165,9 +164,8 @@ class Scraper:
         :return: list[int]
         """
         changes = [0, 0, 0]
-        current_houses = {}
         removed_houses = {}
-
+        current_houses = {}
         for mls in self.houses:
             if mls in houses:
                 current_houses[mls] = self.houses[mls]
@@ -196,15 +194,6 @@ class Scraper:
         self.__update_csv(today_file, houses)
         return changes
 
-    def set_proxy(self, proxy):
-        """
-        Sets self.proxy with proxy.
-
-        :param proxy:
-        :return:
-        """
-        self.proxy = proxy
-
     def __update_csv(self, file_name, houses):
         # """
         # Update the out.csv file with current houses.
@@ -226,8 +215,15 @@ class Scraper:
         # :param link: str
         # :return: ElementTree
         # """
-        time.sleep(2)  # add a 2 second delay
-        session = requests.get(url=link, headers=self.header, proxies=self.proxy)
+        time.sleep(10)  # add a 2 second delay
+        session = requests.get(url=link,
+                               headers=self.header,
+                               proxies=dict(http='http://' + config.USERNAME +
+                                                 ':' + config.PASSWORD +
+                                                 '@' + config.HOST +
+                                                 ':' + config.PORT))
+        if session.status_code != requests.codes.ok:
+            session.raise_for_status()
         try:
             tree = etree.HTML(session.text)
         except Exception as exc:
