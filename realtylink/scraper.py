@@ -109,30 +109,31 @@ class Scraper:
             tree = self.__build_tree(page)
             num_houses = pages[page]
             interval = 0
+
             for num in range(num_houses):
-                address = tree.xpath("/html/body/div/table/tr[6]/td/table/tr["
+                address = tree.xpath("/html/body/div/table//td/table/tr["
                                      + str(5 + interval)
                                      + "]/td[1]/font")
                 address = remove_trailing(address[0].text)
-                location = tree.xpath("/html/body/div/table/tr[6]/td/table/tr["
+                location = tree.xpath("/html/body/div/table//td/table/tr["
                                       + str(3 + interval)
                                       + "]/td[2]/table/tr/td[1]/font/b")
                 location = location[0].text.split(", ")
                 neighbourhood = location[0]
                 city = location[1]
-                price = tree.xpath("/html/body/div/table/tr[6]/td/table/tr["
+                price = tree.xpath("/html/body/div/table//td/table/tr["
                                    + str(4 + interval)
                                    + "]/td[1]/font/text()")
                 price = price[0][2:]
-                mls = tree.xpath("/html/body/div/table/tr[6]/td/table/tr["
+                mls = tree.xpath("/html/body/div/table//td/table/tr["
                                  + str(6 + interval)
                                  + "]/td[1]/font")
                 mls = mls[0].text
-                lot_dimensions = tree.xpath("/html/body/div/table/tr[6]/td/table/tr["
+                lot_dimensions = tree.xpath("/html/body/div/table//td/table/tr["
                                             + str(6 + interval)
                                             + "]/td[5]/font")
                 lot_dimensions = remove_trailing(lot_dimensions[0].text)
-                link = tree.xpath("/html/body/div/table/tr[6]/td/table/tr["
+                link = tree.xpath("/html/body/div/table//td/table/tr["
                                   + str(4 + interval)
                                   + "]/td[1]/a")
                 link = "http://www.realtylink.org/prop_search/" + link[0].get("href")
@@ -225,6 +226,7 @@ class Scraper:
                                                  ':' + config.PASSWORD +
                                                  '@' + config.HOST +
                                                  ':' + config.PORT))
+        print(session.text, link)
         if session.status_code != requests.codes.ok:
             session.raise_for_status()
         try:
