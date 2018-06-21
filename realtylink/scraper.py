@@ -219,14 +219,13 @@ class Scraper:
         # :param link: str
         # :return: ElementTree
         # """
-        time.sleep(10)  # add a 10 second delay
+        time.sleep(2)  # add a 2 second delay
         session = requests.get(url=link,
                                headers=self.header,
                                proxies=dict(http='http://' + config.USERNAME +
                                                  ':' + config.PASSWORD +
                                                  '@' + config.HOST +
                                                  ':' + config.PORT))
-        print(session.text, link)
         if session.status_code != requests.codes.ok:
             session.raise_for_status()
         try:
