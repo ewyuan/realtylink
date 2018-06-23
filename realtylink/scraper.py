@@ -63,6 +63,7 @@ class Scraper:
         self.link = generate_links(file)
         self.data_frame = self.__build_empty_dataframe()
         self.houses = {}
+        self.proxies = ""
         try:
             for i in pd.read_csv(yesterday_file).to_dict(orient="split")["data"]:
                 key = i.pop(0)
@@ -71,7 +72,8 @@ class Scraper:
                     self.houses[key] = [""] + i
         except FileNotFoundError:
             print("File does not exist.")
-        self.header = {'User-Agent': 'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_13_1) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/66.0.3359.181 Safari/537.36'}
+        self.header = {'User-Agent': 'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_13_1) AppleWebKit/537.36 '
+                                     '(KHTML, like Gecko) Chrome/67.0.3396.87 Safari/537.36'}
 
     def get_pages(self):
         """
@@ -198,6 +200,15 @@ class Scraper:
         self.__update_csv(today_file, houses)
         return changes
 
+    def set_proxies(self, proxies):
+        """
+        Sets self.proxies to proxies.
+
+        :param proxies: str
+        :return: None
+        """
+        self.proxies = proxies
+
     def __update_csv(self, file_name, houses):
         # """
         # Update the out.csv file with current houses.
@@ -222,10 +233,7 @@ class Scraper:
         time.sleep(2)  # add a 2 second delay
         session = requests.get(url=link,
                                headers=self.header,
-                               proxies=dict(http='http://' + config.USERNAME +
-                                                 ':' + config.PASSWORD +
-                                                 '@' + config.HOST +
-                                                 ':' + config.PORT))
+                               proxies=self.proxies)
         if session.status_code != requests.codes.ok:
             session.raise_for_status()
         try:
