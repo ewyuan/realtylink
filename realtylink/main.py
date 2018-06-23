@@ -32,14 +32,13 @@ def send_mail(send_from, send_to, subject, text, file, email_server):
     msg['Subject'] = subject
     msg.attach(MIMEText(text))
 
-    attachment = open(file, "rb")
-
-    part = MIMEBase('application', 'octet-stream')
-    part.set_payload(attachment.read())
-    encoders.encode_base64(part)
-    part.add_header('Content-Disposition', "attachment; filename= %s" % file[6:])  # if path changes: change file[4:]
-
-    msg.attach(part)
+    if file != "":
+        attachment = open(file, "rb")
+        part = MIMEBase('application', 'octet-stream')
+        part.set_payload(attachment.read())
+        encoders.encode_base64(part)
+        part.add_header('Content-Disposition', "attachment; filename= %s" % file[6:])  # if path changes: change file[4:]
+        msg.attach(part)
 
     server = smtplib.SMTP(email_server, 587)
     server.starttls()
@@ -80,28 +79,37 @@ def build_subject(changes):
 
 
 def main():
-    print("Starting...")
-    # noinspection PyBroadException
-    try:
-        today_file = "files/" + str(datetime.date.today()) + ".csv"
-        yesterday_file = "files/" + str(datetime.date.today() - datetime.timedelta(1)) + ".csv"
-
-        exist = os.path.isfile(today_file)
-        scraper = Scraper(yesterday_file, "cities.csv")
-        pages = scraper.get_pages()
-        houses = scraper.parse_realtylink_pages(pages)
-        changes = scraper.update_houses(today_file, houses)
-        email_server = "smtp-mail.outlook.com"
-        if (changes[0] > 0 or changes[1] > 0 or changes[2] > 0) and (not exist):
-            subject = build_subject(changes)
-            send_mail(config.EMAIL_EMAIL, config.EMAIL_LIST, subject, "", today_file, email_server)
-    except Exception:
-        print("Failed. Trying again...")
-        main()
+    i = 10
+    while i > 0:
+        try:
+            today_file = "files/" + str(datetime.date.today()) + ".csv"
+            yesterday_file = "files/" + str(datetime.date.today() - datetime.timedelta(1)) + ".csv"
+            host = config.get_host()
+            print("Running with " + host + "...")
+            proxies = {'http': 'http://' + config.USERNAME +
+                               ':' + config.PASSWORD +
+                               '@' + host +
+                               ':' + config.PORT}
+            exist = os.path.isfile(today_file)
+            scraper = Scraper(yesterday_file, "cities.csv")
+            scraper.set_proxies(proxies)
+            pages = scraper.get_pages()
+            houses = scraper.parse_realtylink_pages(pages)
+            changes = scraper.update_houses(today_file, houses)
+            if (changes[0] > 0 or changes[1] > 0 or changes[2] > 0) and (not exist):
+                subject = build_subject(changes)
+                send_mail(config.EMAIL_EMAIL, config.EMAIL_LIST, subject, "", today_file, config.EMAIL_SMTP)
+        except Exception as e:
+            print("Failed. Trying again...")
+            subject = "Please check code, script failed."
+            send_mail(config.EMAIL_EMAIL, [config.EMAIL_EMAIL], subject, str(e), "", config.EMAIL_SMTP)
+            i -= 1
+            continue
+        break
 
 
 if __name__ == "__main__":
-    schedule.every().day.at("11:00").do(main)
+    schedule.every().day.at("9:00").do(main)
     while 1:
         schedule.run_pending()
         time.sleep(1)
