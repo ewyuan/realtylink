@@ -79,7 +79,7 @@ def build_subject(changes):
 
 
 def main():
-    i = 10
+    i = 20
     while i > 0:
         try:
             today_file = "files/" + str(datetime.date.today()) + ".csv"
@@ -109,7 +109,8 @@ def main():
 
 
 if __name__ == "__main__":
-    schedule.every().day.at("9:00").do(main)
+    schedule.every().day.at("9:30").do(main)
     while 1:
         schedule.run_pending()
         time.sleep(1)
+#    main()

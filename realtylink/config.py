@@ -1,7 +1,18 @@
+from random import randint
+
+def get_host():
+    index = randint(0, 1)
+    if index == 0:
+        host = "us" + str(randint(1, 1706)) + ".nordvpn.com"
+    else:
+        host = "ca" + str(randint(1, 291)) + ".nordvpn.com"
+    return host
+
 EMAIL_EMAIL = ""
 EMAIL_PASSWORD = ""
+EMAIL_SMTP = "smtp-mail.outlook.com"
 HOST = ""
-PORT = ""
+PORT = "80"
 USERNAME = ""
 PASSWORD = ""
 
@@ -17,7 +28,8 @@ MIN_LOT_SIZE = {"Vancouver West": 4000,
                 "Burnaby": 5000,
                 "New Westminster": 5000,
                 "Maple Ridge": 8000,
-                "Coquitlam": 8000}
+                "Coquitlam": 8000,
+		"Mission": 8000}
 
 # DO NOT CHANGE VALUES BELOW
 RSPP = "20"  # not sure what this is
