@@ -84,12 +84,15 @@ def main():
         try:
             today_file = "files/" + str(datetime.date.today()) + ".csv"
             yesterday_file = "files/" + str(datetime.date.today() - datetime.timedelta(1)) + ".csv"
-            host = config.get_host()
-            print("Running with " + host + "...")
-            proxies = {'http': 'http://' + config.USERNAME +
-                               ':' + config.PASSWORD +
-                               '@' + host +
-                               ':' + config.PORT}
+            if config.PROXY_SUPPORT:
+                host = config.get_host()
+                print("Running with " + host + "...")
+                proxies = {'http': 'http://' + config.USERNAME +
+                                   ':' + config.PASSWORD +
+                                   '@' + host +
+                                   ':' + config.PORT}
+            else:
+                proxies = {}
             exist = os.path.isfile(today_file)
             scraper = Scraper(yesterday_file, "cities.csv")
             scraper.set_proxies(proxies)
@@ -109,8 +112,7 @@ def main():
 
 
 if __name__ == "__main__":
-    schedule.every().day.at("9:30").do(main)
+    schedule.every().day.at(config.START_TIME).do(main)
     while 1:
         schedule.run_pending()
         time.sleep(1)
-#    main()
