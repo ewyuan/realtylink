@@ -112,7 +112,10 @@ def main():
 
 
 if __name__ == "__main__":
-    schedule.every().day.at(config.START_TIME).do(main)
-    while 1:
-        schedule.run_pending()
-        time.sleep(1)
+    if config.RUN_DAILY:
+        schedule.every().day.at(config.START_TIME).do(main)
+        while 1:
+            schedule.run_pending()
+            time.sleep(1)
+    else:
+        main()

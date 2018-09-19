@@ -12,11 +12,16 @@ EMAIL_LIST = []
 """
 The settings below are for the scraper.
 """
+# If RUN_DAILY is True, then the START_TIME needs to be configured.
+RUN_DAILY = True
+
 # START_TIME represents the starting time for the algorithm. (START_TIME is in 24hr clock format)
-START_TIME = "9:00"
+START_TIME = "09:00"
 
 # If PROXY_SUPPORT is True, then the proxy account information below needs to be filled out.
 PROXY_SUPPORT = True
+
+
 
 """
 The settings below are for your proxy account.
