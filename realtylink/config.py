@@ -8,6 +8,16 @@ EMAIL_EMAIL = ""
 EMAIL_PASSWORD = ""
 EMAIL_SMTP = ""
 EMAIL_LIST = []
+
+"""
+The settings below are for the scraper.
+"""
+# START_TIME represents the starting time for the algorithm. (START_TIME is in 24hr clock format)
+START_TIME = "9:00"
+
+# If PROXY_SUPPORT is True, then the proxy account information below needs to be filled out.
+PROXY_SUPPORT = True
+
 """
 The settings below are for your proxy account.
 
