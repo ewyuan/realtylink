@@ -17,6 +17,10 @@ A web scraper that aggregates real estate data from http://www.realtylink.org.
 >> pip3 install -r requirements.txt
 >> python3 ./realtylink/main.py
 ```
+To run the program continuously:
+```
+>> sudo nohup python3 ./realtylink/main.py &
+```
 
 ## Sample output:
 Please see ./realtylink/files/ for sample output files.
