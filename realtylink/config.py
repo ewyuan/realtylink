@@ -13,7 +13,7 @@ EMAIL_LIST = []
 The settings below are for the scraper.
 """
 # If RUN_DAILY is True, then the START_TIME needs to be configured.
-RUN_DAILY = True
+RUN_DAILY = False
 
 # START_TIME represents the starting time for the algorithm. (START_TIME is in 24hr clock format)
 START_TIME = "09:00"

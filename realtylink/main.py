@@ -10,6 +10,16 @@ from email.mime.text import MIMEText
 from email.utils import COMMASPACE, formatdate
 from realtylink.scraper import Scraper
 from realtylink import config
+from random import randint
+
+
+def get_host():
+    index = randint(0, 1)
+    if index == 0:
+        host = "us" + str(randint(1, 1706)) + ".nordvpn.com"
+    else:
+        host = "ca" + str(randint(1, 291)) + ".nordvpn.com"
+    return host
 
 
 def send_mail(send_from, send_to, subject, text, file, email_server):
@@ -85,7 +95,7 @@ def main():
             today_file = "files/" + str(datetime.date.today()) + ".csv"
             yesterday_file = "files/" + str(datetime.date.today() - datetime.timedelta(1)) + ".csv"
             if config.PROXY_SUPPORT:
-                host = config.get_host()
+                host = get_host()
                 print("Running with " + host + "...")
                 proxies = {'http': 'http://' + config.USERNAME +
                                    ':' + config.PASSWORD +
